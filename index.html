@@ -69,7 +69,6 @@
     [data-theme="light"] .code-block .st { color: #059669; }
     [data-theme="light"] .code-block .fn { color: #2C66DD; }
     [data-theme="light"] .topbar__brand-icon { box-shadow: 0 2px 8px rgba(44,102,221,0.2); }
-    [data-theme="light"] .sidebar__logo { background: linear-gradient(135deg, var(--primary), #1E4FAF); }
     [data-theme="light"] .hero__logo { box-shadow: 0 8px 40px rgba(44,102,221,0.15); }
     [data-theme="light"] .main::-webkit-scrollbar-thumb { background: rgba(44,102,221,0.2); }
     [data-theme="light"] .progress-bar { background: rgba(0,0,0,0.04); }
@@ -201,31 +200,6 @@
     .sidebar::-webkit-scrollbar { width: 4px; }
     .sidebar::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
 
-    .sidebar__brand {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      padding: 4px 14px 16px;
-      margin-bottom: 8px;
-      border-bottom: 1px solid var(--border);
-    }
-    .sidebar__logo {
-      width: 28px;
-      height: 28px;
-      background: linear-gradient(135deg, var(--primary), #1E4FAF);
-      border-radius: 8px;
-      padding: 5px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    .sidebar__logo svg { width: 100%; height: 100%; }
-    .sidebar__brand span {
-      font-size: 0.8rem;
-      font-weight: 600;
-      color: var(--text-muted);
-      letter-spacing: 0.3px;
-    }
     .sidebar__label {
       font-size: 0.65rem;
       font-weight: 600;
@@ -867,10 +841,6 @@
 
     <!-- ═══════ SIDEBAR ═══════ -->
     <nav class="sidebar">
-      <div class="sidebar__brand">
-        <div class="sidebar__logo"><svg viewBox="0 0 82 123" fill="none" xmlns="http://www.w3.org/2000/svg"><path opacity="0.4" d="M75.9605 0.439268L2.01331 41.0136C0.777828 41.6914 0 43.0561 0 44.5456V60.2388C0 63.209 2.9277 65.1256 5.38482 63.7639L79.3329 22.8071C80.561 22.1263 81.3333 20.7666 81.3333 19.282V3.97134C81.3333 1.00813 78.4176 -0.908551 75.9605 0.439268Z" fill="white"/><path d="M69.2439 46.1954L2.11479 80.137C0.814143 80.7952 0 82.0862 0 83.4919V104.467C0 105.956 0.910451 107.306 2.32825 107.923L35.7727 122.462C36.8876 122.946 38.1734 122.913 39.2586 122.37L72.9433 105.557C74.2548 104.903 75.0769 103.606 75.0769 102.193V84.6974C75.0769 81.8272 71.872 79.9957 69.224 81.353L41.4449 95.5958C37.669 97.5318 32.9857 95.6518 31.7903 91.7202C30.9027 88.7988 32.2768 85.6829 35.0846 84.2497L72.975 64.9114C74.2687 64.2513 75.0759 62.9641 75.0759 61.5632V49.5512C75.0759 46.6905 71.8899 44.857 69.2439 46.1954Z" fill="white"/></svg></div>
-        <span>Documentation</span>
-      </div>
       <div class="sidebar__label">Getting Started</div>
       <a class="nav-item active" data-section="home" onclick="navigate('home')">
         <i data-lucide="home"></i> Home
@@ -975,6 +945,7 @@
           <div class="hero__cta">
             <button class="btn btn--primary" onclick="navigate('quickstart')"><i data-lucide="play"></i> Get Started</button>
             <button class="btn btn--ghost" onclick="navigate('shells')"><i data-lucide="book-open"></i> Shell Reference</button>
+            <button class="btn btn--ghost" onclick="navigate('claude')"><i data-lucide="download-cloud"></i> Setup Claude MCP</button>
           </div>
         </div>
       </div>
@@ -1130,6 +1101,17 @@
             <p>Specify "under Reports" or "under Settings" to guide shell selection.</p>
           </div>
         </div>
+
+        <div class="callout callout--info">
+          <i data-lucide="message-square"></i>
+          <div class="callout__content">
+            <strong>Using Claude Desktop?</strong>
+            <p>You'll need to install the MCP connector first. Follow our step-by-step setup guide.</p>
+          </div>
+        </div>
+        <button class="btn btn--primary" onclick="navigate('claude')" style="margin-bottom:32px;">
+          <i data-lucide="download-cloud"></i> Setup Claude MCP
+        </button>
 
         <h2>Available Tabs</h2>
         <div class="table-wrap">
@@ -1358,6 +1340,83 @@
           </div>
         </div>
 
+        <!-- SCENARIO 4 -->
+        <h2>Scenario 4: Multiple Layout Options (Shell X — AI Custom)</h2>
+        <p>When you want the AI to <strong>design a completely new layout from scratch</strong> — or generate multiple design options for the same page using competitor patterns — use <strong>Shell X</strong>.</p>
+
+        <div class="callout callout--warning">
+          <i data-lucide="wand-2"></i>
+          <div class="callout__content">
+            <strong>Shell X = AI designs the layout from zero</strong>
+            <p>Unlike shells A–O which are pre-built skeletons, Shell X tells the AI to create a custom layout. Combine with competitor patterns to get multiple unique design options.</p>
+          </div>
+        </div>
+
+        <h3>How It Works</h3>
+        <p>Attach a screenshot → describe the Area Map → ask for multiple layout variations → AI generates different designs using competitor patterns and assigns Shell X.</p>
+
+        <div class="code-block" data-lang="multiple layouts — option request">
+<span class="cm">// Attach screenshot + ask for design options</span>
+"Here's my current dashboard. Create an Area Map from this screenshot.
+ I want <span class="st">3 different layout designs</span> for the same page
+ using competitor patterns. Use <span class="fn">Shell X</span>.
+
+ Product: <span class="st">Log360 Cloud</span>
+ Tab: <span class="st">Dashboard</span>"</div>
+
+        <div class="code-block" data-lang="competitor-driven redesign">
+<span class="cm">// Ask AI to research competitors and give layout options</span>
+"Recreate this screen for <span class="st">Log360 Cloud</span> — use <span class="fn">Elegant MCP tool</span>
+
+ <span class="kw">Area Map:</span>
+ - Top: KPI cards row
+ - Middle: 2-column chart grid
+ - Bottom: Alert feed table
+
+ Give me <span class="st">3 design variations</span> inspired by:
+ 1. Splunk SIEM layout
+ 2. Microsoft Sentinel style
+ 3. CrowdStrike dashboard pattern
+
+ Use <span class="fn">Shell X</span> for custom layout. Product: <span class="st">Log360 Cloud</span>"</div>
+
+        <div class="code-block" data-lang="shell x — completely new layout">
+<span class="cm">// No screenshot — pure AI creativity with Shell X</span>
+"Design a <span class="st">Threat Hunting Dashboard</span> for <span class="st">Log360 Cloud</span>
+ using <span class="fn">Shell X</span> — I want a unique layout not based on any
+ predefined shell. Research top SIEM competitors and create
+ something modern with real-time data emphasis."</div>
+
+        <div class="code-block" data-lang="pick from options">
+<span class="cm">// After AI gives you multiple layout options, pick one</span>
+"I like <span class="st">Option 2</span> (the Sentinel-inspired layout).
+ Build that as the final HTML — use <span class="fn">Shell X</span>."</div>
+
+        <h3>When to Use Shell X</h3>
+        <div class="grid-2">
+          <div class="info-card">
+            <div class="info-card__icon"><i data-lucide="palette"></i></div>
+            <h4>Want Multiple Options</h4>
+            <p>Ask for 2–4 layout variations and pick the one you like best before building.</p>
+          </div>
+          <div class="info-card">
+            <div class="info-card__icon info-card__icon--success"><i data-lucide="search"></i></div>
+            <h4>Competitor Research</h4>
+            <p>Reference specific products (Splunk, Sentinel, CrowdStrike) for layout inspiration.</p>
+          </div>
+          <div class="info-card">
+            <div class="info-card__icon info-card__icon--warning"><i data-lucide="puzzle"></i></div>
+            <h4>No Shell Fits</h4>
+            <p>When your page doesn't match any predefined shell (A–O), Shell X builds custom.</p>
+          </div>
+          <div class="info-card">
+            <div class="info-card__icon info-card__icon--danger"><i data-lucide="sparkles"></i></div>
+            <h4>Creative Freedom</h4>
+            <p>Let the AI design an entirely new layout structure — no constraints from templates.</p>
+          </div>
+        </div>
+
+        <!-- CHEATSHEET -->
         <h2>Quick Reference: Prompt Cheatsheet</h2>
         <div class="table-wrap">
           <table>
@@ -1376,6 +1435,11 @@
               <td><strong class="table-bold">Recreate from Image</strong></td>
               <td><code>use Elegant MCP tool</code></td>
               <td>Screenshot + Area Map + Product name + Tab name</td>
+            </tr>
+            <tr>
+              <td><strong class="table-bold">Multiple Layouts / Custom</strong></td>
+              <td><code>Shell X</code></td>
+              <td>Screenshot + Area Map + competitor names + "give N options"</td>
             </tr>
           </table>
         </div>
@@ -1479,6 +1543,12 @@
               <td><strong class="table-bold">Accordion</strong></td>
               <td>FAQ, collapsible sections</td>
               <td>Expandable groups + nested content</td>
+            </tr>
+            <tr style="background:var(--primary-glow);">
+              <td><span class="shell-badge" style="background:linear-gradient(135deg,var(--primary),#5A8DEF);color:white;border:none;">X</span></td>
+              <td><strong class="table-bold">AI Custom (No Template)</strong></td>
+              <td>Unique layouts, competitor-inspired, multi-option designs</td>
+              <td>AI designs from scratch — no predefined skeleton. Used for creative exploration and competitor pattern matching.</td>
             </tr>
           </table>
         </div>
