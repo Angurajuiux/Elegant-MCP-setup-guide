@@ -1,0 +1,1994 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Elegant Agent MCP — Documentation</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    :root {
+      --primary: #2C66DD;
+      --primary-light: #5A8DEF;
+      --primary-dark: #1E4FAF;
+      --primary-glow: rgba(44,102,221,0.15);
+      --accent: #f59e0b;
+      --success: #10b981;
+      --danger: #ef4444;
+      --info: #3b82f6;
+      --bg: #0a0f1a;
+      --bg-card: #131b2e;
+      --bg-card-hover: #1a2540;
+      --bg-surface: #101828;
+      --bg-sidebar: #0c1220;
+      --text: #e2e8f0;
+      --text-muted: #94a3b8;
+      --text-dim: #64748b;
+      --border: rgba(255,255,255,0.06);
+      --border-active: rgba(44,102,221,0.4);
+      --glass: rgba(255,255,255,0.03);
+      --radius: 12px;
+      --sidebar-w: 280px;
+      --topbar-h: 64px;
+      --code-text: #cdd6f4;
+      --code-bg: #0a0e1a;
+    }
+
+    [data-theme="light"] {
+      --bg: #f8fafc;
+      --bg-card: #ffffff;
+      --bg-card-hover: #f1f5f9;
+      --bg-surface: #f1f5f9;
+      --bg-sidebar: #ffffff;
+      --text: #1e293b;
+      --text-muted: #475569;
+      --text-dim: #64748b;
+      --border: rgba(0,0,0,0.08);
+      --border-active: rgba(44,102,221,0.35);
+      --glass: rgba(0,0,0,0.02);
+      --primary-glow: rgba(44,102,221,0.08);
+      --code-text: #334155;
+      --code-bg: #f1f5f9;
+    }
+    [data-theme="light"] .hero::before {
+      background: radial-gradient(ellipse, rgba(44,102,221,0.06) 0%, transparent 60%);
+    }
+    [data-theme="light"] .sidebar {
+      box-shadow: 1px 0 0 var(--border);
+    }
+    [data-theme="light"] .topbar {
+      box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+    }
+    [data-theme="light"] .info-card,
+    [data-theme="light"] .hero__card {
+      box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+    }
+    [data-theme="light"] .code-block .cm { color: #6b7280; }
+    [data-theme="light"] .code-block .kw { color: #1E4FAF; }
+    [data-theme="light"] .code-block .st { color: #059669; }
+    [data-theme="light"] .code-block .fn { color: #2C66DD; }
+    [data-theme="light"] .topbar__brand-icon { box-shadow: 0 2px 8px rgba(44,102,221,0.2); }
+    [data-theme="light"] .sidebar__logo { background: linear-gradient(135deg, var(--primary), #1E4FAF); }
+    [data-theme="light"] .hero__logo { box-shadow: 0 8px 40px rgba(44,102,221,0.15); }
+    [data-theme="light"] .main::-webkit-scrollbar-thumb { background: rgba(44,102,221,0.2); }
+    [data-theme="light"] .progress-bar { background: rgba(0,0,0,0.04); }
+
+    * { margin:0; padding:0; box-sizing:border-box; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Inter', -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.7;
+      overflow: hidden;
+      height: 100vh;
+    }
+
+    /* ═══════ LAYOUT ═══════ */
+    .app {
+      display: grid;
+      grid-template-columns: var(--sidebar-w) 1fr;
+      grid-template-rows: var(--topbar-h) 1fr;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    /* ═══════ TOP BAR ═══════ */
+    .topbar {
+      grid-column: 1 / -1;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+      background: var(--bg-sidebar);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+      z-index: 100;
+      position: sticky;
+      top: 0;
+    }
+    .topbar__brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 700;
+      font-size: 1.05rem;
+      color: var(--text);
+    }
+    .topbar__brand-icon {
+      width: 36px;
+      height: 36px;
+      background: linear-gradient(135deg, var(--primary) 0%, #5A8DEF 100%);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 7px;
+    }
+    .topbar__brand-icon svg {
+      width: 100%;
+      height: 100%;
+    }
+    .topbar__right {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .topbar__badge {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 6px 14px;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+    .topbar__badge .dot {
+      width: 7px; height: 7px;
+      background: var(--success);
+      border-radius: 50%;
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+
+    .topbar__version {
+      font-size: 0.7rem;
+      color: var(--text-dim);
+      background: var(--bg-card);
+      padding: 4px 10px;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+    }
+
+    .theme-toggle {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: var(--bg-card);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.3s;
+      color: var(--text-muted);
+    }
+    .theme-toggle:hover {
+      border-color: var(--border-active);
+      color: var(--primary-light);
+      transform: rotate(15deg);
+    }
+    .theme-toggle i { width: 18px; height: 18px; }
+    .theme-toggle .icon-sun { display: none; }
+    [data-theme="light"] .theme-toggle .icon-moon { display: none; }
+    [data-theme="light"] .theme-toggle .icon-sun { display: block; }
+
+    /* ═══════ SIDEBAR ═══════ */
+    .sidebar {
+      background: var(--bg-sidebar);
+      border-right: 1px solid var(--border);
+      overflow-y: auto;
+      padding: 20px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .sidebar::-webkit-scrollbar { width: 4px; }
+    .sidebar::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+
+    .sidebar__brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 4px 14px 16px;
+      margin-bottom: 8px;
+      border-bottom: 1px solid var(--border);
+    }
+    .sidebar__logo {
+      width: 28px;
+      height: 28px;
+      background: linear-gradient(135deg, var(--primary), #1E4FAF);
+      border-radius: 8px;
+      padding: 5px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .sidebar__logo svg { width: 100%; height: 100%; }
+    .sidebar__brand span {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      letter-spacing: 0.3px;
+    }
+    .sidebar__label {
+      font-size: 0.65rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1.2px;
+      color: var(--text-dim);
+      padding: 16px 12px 6px;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 14px;
+      border-radius: 8px;
+      font-size: 0.84rem;
+      font-weight: 500;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all 0.2s;
+      text-decoration: none;
+      position: relative;
+      border: 1px solid transparent;
+    }
+    .nav-item:hover {
+      background: var(--glass);
+      color: var(--text);
+      border-color: var(--border);
+    }
+    .nav-item.active {
+      background: var(--primary-glow);
+      color: var(--primary-dark);
+      border-color: var(--border-active);
+      font-weight: 600;
+    }
+    [data-theme="dark"] .nav-item.active,
+    :root:not([data-theme="light"]) .nav-item.active { color: white; }
+    .nav-item.active::before {
+      content: '';
+      position: absolute;
+      left: -12px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 3px;
+      height: 20px;
+      background: var(--primary);
+      border-radius: 0 3px 3px 0;
+    }
+    .nav-item i { width: 16px; height: 16px; opacity: 0.7; }
+    .nav-item.active i { opacity: 1; color: var(--primary-light); }
+    .nav-item__num {
+      margin-left: auto;
+      font-size: 0.65rem;
+      color: var(--text-dim);
+      font-weight: 600;
+      background: var(--bg-card);
+      padding: 2px 7px;
+      border-radius: 4px;
+    }
+
+    /* ═══════ MAIN CONTENT ═══════ */
+    .main {
+      overflow-y: auto;
+      scroll-behavior: smooth;
+      padding: 0;
+    }
+    .main::-webkit-scrollbar { width: 6px; }
+    .main::-webkit-scrollbar-thumb { background: rgba(44,102,221,0.3); border-radius: 6px; }
+
+    .section {
+      min-height: 100%;
+      padding: 48px 56px 80px;
+      display: none;
+      animation: fadeIn 0.35s ease;
+    }
+    .section.active { display: block; }
+    @keyframes fadeIn { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:translateY(0)} }
+
+    /* ═══════ SECTION STYLES ═══════ */
+    .section__header {
+      margin-bottom: 40px;
+    }
+    .section__header h1 {
+      font-size: 2.2rem;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      background: linear-gradient(135deg, var(--text) 0%, var(--primary) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 10px;
+    }
+    .section__header p {
+      font-size: 1.05rem;
+      color: var(--text-muted);
+      max-width: 600px;
+    }
+
+    h2 {
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: var(--text);
+      margin: 40px 0 16px;
+    }
+    h3 {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--text);
+      margin: 28px 0 12px;
+    }
+    p { margin-bottom: 14px; color: var(--text-muted); }
+
+    /* ═══════ HERO (landing) ═══════ */
+    .hero {
+      min-height: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 60px 40px;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: -200px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 800px;
+      height: 800px;
+      background: radial-gradient(ellipse, rgba(44,102,221,0.12) 0%, transparent 60%);
+      pointer-events: none;
+      animation: heroGlow 6s ease-in-out infinite;
+    }
+    @keyframes heroGlow {
+      0%,100% { opacity: 1; transform: translateX(-50%) scale(1); }
+      50% { opacity: 0.6; transform: translateX(-50%) scale(1.1); }
+    }
+
+    /* Animated orbit rings */
+    .hero__rings {
+      position: absolute;
+      width: 280px;
+      height: 280px;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -55%);
+      pointer-events: none;
+    }
+    .hero__ring {
+      position: absolute;
+      inset: 0;
+      border-radius: 50%;
+      border: 1px solid rgba(44,102,221,0.1);
+    }
+    .hero__ring:nth-child(1) {
+      animation: spinRing 20s linear infinite;
+      border-color: rgba(44,102,221,0.12);
+    }
+    .hero__ring:nth-child(2) {
+      inset: -30px;
+      animation: spinRing 30s linear infinite reverse;
+      border-color: rgba(44,102,221,0.07);
+    }
+    .hero__ring:nth-child(3) {
+      inset: -60px;
+      animation: spinRing 40s linear infinite;
+      border-color: rgba(44,102,221,0.04);
+    }
+    .hero__ring::after {
+      content: '';
+      position: absolute;
+      top: -3px;
+      left: 50%;
+      width: 6px;
+      height: 6px;
+      background: var(--primary-light);
+      border-radius: 50%;
+      box-shadow: 0 0 8px var(--primary);
+    }
+    .hero__ring:nth-child(2)::after {
+      top: auto;
+      bottom: -3px;
+      width: 4px;
+      height: 4px;
+      background: #5A8DEF;
+    }
+    .hero__ring:nth-child(3)::after {
+      top: 50%;
+      left: -3px;
+      width: 5px;
+      height: 5px;
+      background: rgba(44,102,221,0.6);
+    }
+    @keyframes spinRing { to { transform: rotate(360deg); } }
+
+    /* Floating particles */
+    .hero__particles {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      pointer-events: none;
+    }
+    .hero__particle {
+      position: absolute;
+      width: 3px;
+      height: 3px;
+      background: var(--primary-light);
+      border-radius: 50%;
+      opacity: 0;
+      animation: particleFloat 8s ease-in-out infinite;
+    }
+    .hero__particle:nth-child(1) { left: 15%; top: 20%; animation-delay: 0s; }
+    .hero__particle:nth-child(2) { left: 80%; top: 30%; animation-delay: 1.5s; width: 2px; height: 2px; }
+    .hero__particle:nth-child(3) { left: 25%; top: 70%; animation-delay: 3s; }
+    .hero__particle:nth-child(4) { left: 70%; top: 65%; animation-delay: 4.5s; width: 4px; height: 4px; }
+    .hero__particle:nth-child(5) { left: 50%; top: 15%; animation-delay: 2s; width: 2px; height: 2px; }
+    .hero__particle:nth-child(6) { left: 10%; top: 50%; animation-delay: 5.5s; }
+    .hero__particle:nth-child(7) { left: 85%; top: 80%; animation-delay: 7s; width: 2px; height: 2px; }
+    .hero__particle:nth-child(8) { left: 40%; top: 85%; animation-delay: 6s; }
+    @keyframes particleFloat {
+      0% { opacity: 0; transform: translateY(0) scale(0); }
+      20% { opacity: 0.8; transform: translateY(-10px) scale(1); }
+      80% { opacity: 0.4; transform: translateY(-40px) scale(0.8); }
+      100% { opacity: 0; transform: translateY(-60px) scale(0); }
+    }
+
+    /* Logo */
+    .hero__logo {
+      width: 88px;
+      height: 88px;
+      background: linear-gradient(135deg, var(--primary) 0%, #1E4FAF 50%, #5A8DEF 100%);
+      border-radius: 22px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      margin-bottom: 28px;
+      position: relative;
+      z-index: 2;
+      box-shadow: 0 8px 40px rgba(44,102,221,0.35), 0 0 0 1px rgba(255,255,255,0.1) inset;
+      animation: logoFloat 4s ease-in-out infinite, logoEntrance 0.8s ease both;
+    }
+    @keyframes logoFloat {
+      0%,100% { transform: translateY(0) rotate(0deg); }
+      25% { transform: translateY(-5px) rotate(1deg); }
+      75% { transform: translateY(3px) rotate(-1deg); }
+    }
+    @keyframes logoEntrance {
+      from { opacity: 0; transform: translateY(20px) scale(0.8); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+    .hero__logo svg {
+      width: 100%;
+      height: 100%;
+      filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
+    }
+    .hero__logo::before {
+      content: '';
+      position: absolute;
+      inset: -4px;
+      border-radius: 26px;
+      background: conic-gradient(from 0deg, var(--primary), #5A8DEF, var(--primary), #1E4FAF, var(--primary));
+      z-index: -1;
+      opacity: 0.6;
+      animation: spinGlow 6s linear infinite;
+    }
+    @keyframes spinGlow { to { transform: rotate(360deg); } }
+    .hero__logo::after {
+      content: '';
+      position: absolute;
+      inset: -8px;
+      border-radius: 30px;
+      background: conic-gradient(from 180deg, var(--primary), transparent, var(--primary));
+      z-index: -2;
+      opacity: 0.3;
+      filter: blur(12px);
+      animation: spinGlow 8s linear infinite reverse;
+    }
+
+    .hero__title {
+      font-size: 3.5rem;
+      font-weight: 900;
+      letter-spacing: -1.5px;
+      background: linear-gradient(135deg, var(--text) 20%, var(--primary) 80%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 16px;
+      position: relative;
+      z-index: 2;
+      animation: fadeUp 0.6s ease 0.2s both;
+    }
+    .hero__sub {
+      font-size: 1.2rem;
+      color: var(--text-muted);
+      max-width: 520px;
+      margin-bottom: 40px;
+      position: relative;
+      z-index: 2;
+      animation: fadeUp 0.6s ease 0.35s both;
+    }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(16px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .hero__cards {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      max-width: 720px;
+      width: 100%;
+      position: relative;
+      z-index: 2;
+      margin-bottom: 40px;
+    }
+    .hero__card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px 20px;
+      text-align: left;
+      transition: all 0.3s;
+      animation: cardEntrance 0.5s ease both;
+    }
+    .hero__card:nth-child(1) { animation-delay: 0.5s; }
+    .hero__card:nth-child(2) { animation-delay: 0.65s; }
+    .hero__card:nth-child(3) { animation-delay: 0.8s; }
+    @keyframes cardEntrance {
+      from { opacity: 0; transform: translateY(20px) scale(0.95); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+    .hero__card:hover {
+      border-color: var(--border-active);
+      transform: translateY(-4px);
+      box-shadow: 0 12px 40px rgba(44,102,221,0.15);
+    }
+    .hero__card-icon {
+      width: 40px; height: 40px;
+      background: var(--primary-glow);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 12px;
+    }
+    .hero__card-icon i { color: var(--primary-light); width: 20px; height: 20px; }
+    .hero__card h4 { font-size: 0.9rem; font-weight: 600; color: var(--text); margin-bottom: 4px; }
+    .hero__card p { font-size: 0.78rem; color: var(--text-dim); margin: 0; line-height: 1.5; }
+
+    .hero__cta {
+      display: flex;
+      gap: 12px;
+      position: relative;
+      z-index: 2;
+      animation: fadeUp 0.6s ease 0.95s both;
+    }
+    .btn {
+      padding: 12px 24px;
+      border-radius: 10px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s;
+      text-decoration: none;
+    }
+    .btn--primary {
+      background: linear-gradient(135deg, var(--primary) 0%, #1E4FAF 100%);
+      color: white;
+      box-shadow: 0 4px 20px rgba(44,102,221,0.3);
+    }
+    .btn--primary:hover { transform: translateY(-1px); box-shadow: 0 6px 28px rgba(44,102,221,0.4); }
+    .btn--ghost {
+      background: var(--bg-card);
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+    .btn--ghost:hover { border-color: var(--border-active); }
+    .btn i { width: 16px; height: 16px; }
+
+    /* ═══════ CARDS GRID ═══════ */
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 20px 0; }
+    .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; margin: 20px 0; }
+
+    .info-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px;
+      transition: all 0.2s;
+    }
+    .info-card:hover { border-color: var(--border-active); }
+    .info-card__icon {
+      width: 36px; height: 36px;
+      background: var(--primary-glow);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 12px;
+    }
+    .info-card__icon i { color: var(--primary-light); width: 18px; height: 18px; }
+    .info-card__icon--success { background: rgba(16,185,129,0.1); }
+    .info-card__icon--success i { color: var(--success); }
+    .info-card__icon--warning { background: rgba(245,158,11,0.1); }
+    .info-card__icon--warning i { color: var(--accent); }
+    .info-card__icon--danger { background: rgba(239,68,68,0.1); }
+    .info-card__icon--danger i { color: var(--danger); }
+    .info-card h4 { font-size: 0.9rem; font-weight: 600; color: var(--text); margin-bottom: 4px; }
+    .info-card p { font-size: 0.8rem; color: var(--text-dim); margin: 0; }
+
+    /* ═══════ TABLE ═══════ */
+    .table-wrap {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      margin: 20px 0;
+    }
+    table { width: 100%; border-collapse: collapse; font-size: 0.82rem; }
+    th {
+      background: var(--bg-surface);
+      color: var(--text-muted);
+      padding: 12px 16px;
+      text-align: left;
+      font-weight: 600;
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      border-bottom: 1px solid var(--border);
+    }
+    td {
+      padding: 11px 16px;
+      border-bottom: 1px solid var(--border);
+      color: var(--text-muted);
+    }
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: rgba(44,102,221,0.03); }
+
+    .shell-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 28px; height: 28px;
+      background: var(--primary-glow);
+      border: 1px solid var(--border-active);
+      border-radius: 6px;
+      font-weight: 700;
+      font-size: 0.75rem;
+      color: var(--primary-light);
+    }
+    .tab-badge {
+      background: rgba(16,185,129,0.1);
+      border: 1px solid rgba(16,185,129,0.2);
+      color: var(--success);
+      padding: 3px 10px;
+      border-radius: 12px;
+      font-size: 0.7rem;
+      font-weight: 600;
+    }
+    .model-badge {
+      background: rgba(245,158,11,0.1);
+      border: 1px solid rgba(245,158,11,0.2);
+      color: var(--accent);
+      padding: 3px 10px;
+      border-radius: 12px;
+      font-size: 0.7rem;
+      font-weight: 600;
+    }
+    .stars { color: var(--accent); letter-spacing: 1px; }
+
+    /* ═══════ CODE ═══════ */
+    code {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.8em;
+      background: var(--bg-surface);
+      padding: 2px 7px;
+      border-radius: 5px;
+      color: var(--primary-light);
+      border: 1px solid var(--border);
+    }
+    .code-block {
+      background: var(--code-bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px 24px;
+      margin: 16px 0;
+      overflow-x: auto;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.78rem;
+      line-height: 1.7;
+      color: var(--code-text);
+      position: relative;
+    }
+    .code-block::before {
+      content: attr(data-lang);
+      position: absolute;
+      top: 8px;
+      right: 12px;
+      font-size: 0.6rem;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    .code-block .cm { color: #6c7086; font-style: italic; }
+    .code-block .kw { color: #5A8DEF; }
+    .code-block .st { color: #a6e3a1; }
+    .code-block .fn { color: #89b4fa; }
+
+    /* ═══════ CALLOUTS ═══════ */
+    .callout {
+      border-radius: var(--radius);
+      padding: 16px 20px;
+      margin: 20px 0;
+      border: 1px solid;
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+    }
+    .callout i { width: 18px; height: 18px; flex-shrink: 0; margin-top: 2px; }
+    .callout--info { background: rgba(59,130,246,0.05); border-color: rgba(59,130,246,0.2); }
+    .callout--info i { color: var(--info); }
+    .callout--success { background: rgba(16,185,129,0.05); border-color: rgba(16,185,129,0.2); }
+    .callout--success i { color: var(--success); }
+    .callout--warning { background: rgba(245,158,11,0.05); border-color: rgba(245,158,11,0.2); }
+    .callout--warning i { color: var(--accent); }
+    .callout--danger { background: rgba(239,68,68,0.05); border-color: rgba(239,68,68,0.2); }
+    .callout--danger i { color: var(--danger); }
+    .callout__content strong { color: var(--text); display: block; margin-bottom: 4px; font-size: 0.85rem; }
+    .callout__content p { margin: 0; font-size: 0.82rem; }
+
+    /* ═══════ FLOW ═══════ */
+    .flow {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin: 24px 0;
+      padding: 24px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      flex-wrap: wrap;
+    }
+    .flow__step {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      padding: 10px 16px;
+      border-radius: 8px;
+      font-weight: 500;
+      font-size: 0.82rem;
+      color: var(--text);
+    }
+
+    table strong, .table-bold { color: var(--text); }
+    .flow__step .num {
+      width: 22px; height: 22px;
+      background: var(--primary);
+      color: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.65rem;
+      font-weight: 700;
+    }
+    .flow__arrow { color: var(--primary-light); font-size: 1.2rem; }
+
+    /* ═══════ ARCH DIAGRAM ═══════ */
+    .arch-diagram {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 32px;
+      margin: 20px 0;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      line-height: 1.8;
+      white-space: pre;
+      overflow-x: auto;
+    }
+
+    /* ═══════ PROGRESS INDICATOR ═══════ */
+    .progress-bar {
+      position: fixed;
+      top: var(--topbar-h);
+      left: var(--sidebar-w);
+      right: 0;
+      height: 2px;
+      background: var(--border);
+      z-index: 99;
+    }
+    .progress-bar__fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--primary), #5A8DEF);
+      width: 0%;
+      transition: width 0.3s;
+    }
+
+    /* ═══════ FOOTER NAV ═══════ */
+    .section__footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 60px;
+      padding-top: 24px;
+      border-top: 1px solid var(--border);
+    }
+    .section__footer .btn { font-size: 0.8rem; padding: 10px 18px; }
+  </style>
+</head>
+<body>
+  <div class="app">
+
+    <!-- ═══════ TOP BAR ═══════ -->
+    <header class="topbar">
+      <div class="topbar__brand">
+        <div class="topbar__brand-icon"><svg viewBox="0 0 82 123" fill="none" xmlns="http://www.w3.org/2000/svg"><path opacity="0.4" d="M75.9605 0.439268L2.01331 41.0136C0.777828 41.6914 0 43.0561 0 44.5456V60.2388C0 63.209 2.9277 65.1256 5.38482 63.7639L79.3329 22.8071C80.561 22.1263 81.3333 20.7666 81.3333 19.282V3.97134C81.3333 1.00813 78.4176 -0.908551 75.9605 0.439268Z" fill="white"/><path d="M69.2439 46.1954L2.11479 80.137C0.814143 80.7952 0 82.0862 0 83.4919V104.467C0 105.956 0.910451 107.306 2.32825 107.923L35.7727 122.462C36.8876 122.946 38.1734 122.913 39.2586 122.37L72.9433 105.557C74.2548 104.903 75.0769 103.606 75.0769 102.193V84.6974C75.0769 81.8272 71.872 79.9957 69.224 81.353L41.4449 95.5958C37.669 97.5318 32.9857 95.6518 31.7903 91.7202C30.9027 88.7988 32.2768 85.6829 35.0846 84.2497L72.975 64.9114C74.2687 64.2513 75.0759 62.9641 75.0759 61.5632V49.5512C75.0759 46.6905 71.8899 44.857 69.2439 46.1954Z" fill="white"/></svg></div>
+        Elegant Agent MCP
+      </div>
+      <div class="topbar__right">
+        <div class="topbar__badge"><span class="dot"></span> CDN Connected</div>
+        <div class="topbar__badge">Log360 Cloud</div>
+        <div class="topbar__version">v2.0 — June 2026</div>
+        <button class="theme-toggle" onclick="toggleTheme()" title="Toggle theme">
+          <i data-lucide="moon" class="icon-moon"></i>
+          <i data-lucide="sun" class="icon-sun"></i>
+        </button>
+      </div>
+    </header>
+
+    <!-- ═══════ SIDEBAR ═══════ -->
+    <nav class="sidebar">
+      <div class="sidebar__brand">
+        <div class="sidebar__logo"><svg viewBox="0 0 82 123" fill="none" xmlns="http://www.w3.org/2000/svg"><path opacity="0.4" d="M75.9605 0.439268L2.01331 41.0136C0.777828 41.6914 0 43.0561 0 44.5456V60.2388C0 63.209 2.9277 65.1256 5.38482 63.7639L79.3329 22.8071C80.561 22.1263 81.3333 20.7666 81.3333 19.282V3.97134C81.3333 1.00813 78.4176 -0.908551 75.9605 0.439268Z" fill="white"/><path d="M69.2439 46.1954L2.11479 80.137C0.814143 80.7952 0 82.0862 0 83.4919V104.467C0 105.956 0.910451 107.306 2.32825 107.923L35.7727 122.462C36.8876 122.946 38.1734 122.913 39.2586 122.37L72.9433 105.557C74.2548 104.903 75.0769 103.606 75.0769 102.193V84.6974C75.0769 81.8272 71.872 79.9957 69.224 81.353L41.4449 95.5958C37.669 97.5318 32.9857 95.6518 31.7903 91.7202C30.9027 88.7988 32.2768 85.6829 35.0846 84.2497L72.975 64.9114C74.2687 64.2513 75.0759 62.9641 75.0759 61.5632V49.5512C75.0759 46.6905 71.8899 44.857 69.2439 46.1954Z" fill="white"/></svg></div>
+        <span>Documentation</span>
+      </div>
+      <div class="sidebar__label">Getting Started</div>
+      <a class="nav-item active" data-section="home" onclick="navigate('home')">
+        <i data-lucide="home"></i> Home
+      </a>
+      <a class="nav-item" data-section="overview" onclick="navigate('overview')">
+        <i data-lucide="sparkles"></i> What is Elegant Agent?
+        <span class="nav-item__num">01</span>
+      </a>
+      <a class="nav-item" data-section="model" onclick="navigate('model')">
+        <i data-lucide="brain"></i> Recommended Model
+        <span class="nav-item__num">02</span>
+      </a>
+      <a class="nav-item" data-section="quickstart" onclick="navigate('quickstart')">
+        <i data-lucide="rocket"></i> Quick Start
+        <span class="nav-item__num">03</span>
+      </a>
+      <a class="nav-item" data-section="prompting" onclick="navigate('prompting')">
+        <i data-lucide="message-circle-plus"></i> How to Prompt
+        <span class="nav-item__num">04</span>
+      </a>
+
+      <div class="sidebar__label">Reference</div>
+      <a class="nav-item" data-section="shells" onclick="navigate('shells')">
+        <i data-lucide="layout-grid"></i> Shell Types
+        <span class="nav-item__num">05</span>
+      </a>
+      <a class="nav-item" data-section="mapping" onclick="navigate('mapping')">
+        <i data-lucide="git-branch"></i> Shell → Tab Mapping
+        <span class="nav-item__num">06</span>
+      </a>
+      <a class="nav-item" data-section="workflow" onclick="navigate('workflow')">
+        <i data-lucide="workflow"></i> 3-Step Workflow
+        <span class="nav-item__num">07</span>
+      </a>
+
+      <div class="sidebar__label">Advanced</div>
+      <a class="nav-item" data-section="modify" onclick="navigate('modify')">
+        <i data-lucide="pencil"></i> Modify Screens
+        <span class="nav-item__num">08</span>
+      </a>
+      <a class="nav-item" data-section="architecture" onclick="navigate('architecture')">
+        <i data-lucide="cloud"></i> Architecture & CDN
+        <span class="nav-item__num">09</span>
+      </a>
+      <a class="nav-item" data-section="claude" onclick="navigate('claude')">
+        <i data-lucide="message-square"></i> Claude Setup
+        <span class="nav-item__num">10</span>
+      </a>
+      <a class="nav-item" data-section="tips" onclick="navigate('tips')">
+        <i data-lucide="lightbulb"></i> Pro Tips
+        <span class="nav-item__num">11</span>
+      </a>
+    </nav>
+
+    <!-- ═══════ PROGRESS ═══════ -->
+    <div class="progress-bar"><div class="progress-bar__fill" id="progressFill"></div></div>
+
+    <!-- ═══════ MAIN CONTENT ═══════ -->
+    <main class="main" id="mainContent">
+
+      <!-- HOME -->
+      <div class="section active" id="sec-home">
+        <div class="hero">
+          <!-- Animated particles -->
+          <div class="hero__particles">
+            <div class="hero__particle"></div>
+            <div class="hero__particle"></div>
+            <div class="hero__particle"></div>
+            <div class="hero__particle"></div>
+            <div class="hero__particle"></div>
+            <div class="hero__particle"></div>
+            <div class="hero__particle"></div>
+            <div class="hero__particle"></div>
+          </div>
+          <!-- Orbit rings -->
+          <div class="hero__rings">
+            <div class="hero__ring"></div>
+            <div class="hero__ring"></div>
+            <div class="hero__ring"></div>
+          </div>
+          <!-- Logo -->
+          <div class="hero__logo"><svg viewBox="0 0 82 123" fill="none" xmlns="http://www.w3.org/2000/svg"><path opacity="0.4" d="M75.9605 0.439268L2.01331 41.0136C0.777828 41.6914 0 43.0561 0 44.5456V60.2388C0 63.209 2.9277 65.1256 5.38482 63.7639L79.3329 22.8071C80.561 22.1263 81.3333 20.7666 81.3333 19.282V3.97134C81.3333 1.00813 78.4176 -0.908551 75.9605 0.439268Z" fill="white"/><path d="M69.2439 46.1954L2.11479 80.137C0.814143 80.7952 0 82.0862 0 83.4919V104.467C0 105.956 0.910451 107.306 2.32825 107.923L35.7727 122.462C36.8876 122.946 38.1734 122.913 39.2586 122.37L72.9433 105.557C74.2548 104.903 75.0769 103.606 75.0769 102.193V84.6974C75.0769 81.8272 71.872 79.9957 69.224 81.353L41.4449 95.5958C37.669 97.5318 32.9857 95.6518 31.7903 91.7202C30.9027 88.7988 32.2768 85.6829 35.0846 84.2497L72.975 64.9114C74.2687 64.2513 75.0759 62.9641 75.0759 61.5632V49.5512C75.0759 46.6905 71.8899 44.857 69.2439 46.1954Z" fill="white"/></svg></div>
+          <h1 class="hero__title">Elegant Agent MCP</h1>
+          <p class="hero__sub">AI-powered screen builder for ManageEngine Log360 Cloud. Turn natural language into production-ready UI in seconds.</p>
+          <div class="hero__cards">
+            <div class="hero__card">
+              <div class="hero__card-icon"><i data-lucide="cpu"></i></div>
+              <h4>3 MCP Tools</h4>
+              <p>plan_feature, get_atoms, modify_screen — simple, powerful API</p>
+            </div>
+            <div class="hero__card">
+              <div class="hero__card-icon"><i data-lucide="layers"></i></div>
+              <h4>15 Shell Layouts</h4>
+              <p>Pre-built skeletons for dashboards, reports, settings & more</p>
+            </div>
+            <div class="hero__card">
+              <div class="hero__card-icon"><i data-lucide="globe"></i></div>
+              <h4>Cloud Web Components</h4>
+              <p>All &lt;me-*&gt; atoms served via CDN — internet required to view</p>
+            </div>
+          </div>
+          <div class="hero__cta">
+            <button class="btn btn--primary" onclick="navigate('quickstart')"><i data-lucide="play"></i> Get Started</button>
+            <button class="btn btn--ghost" onclick="navigate('shells')"><i data-lucide="book-open"></i> Shell Reference</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 01 OVERVIEW -->
+      <div class="section" id="sec-overview">
+        <div class="section__header">
+          <h1>What is Elegant Agent MCP?</h1>
+          <p>An MCP server that converts prompts into fully functional HTML screens for Log360 Cloud.</p>
+        </div>
+
+        <div class="grid-3">
+          <div class="info-card">
+            <div class="info-card__icon"><i data-lucide="puzzle"></i></div>
+            <h4>Web Components (CDN)</h4>
+            <p>All UI atoms (&lt;me-*&gt; tags) are served from cloud CDN. No build step needed.</p>
+          </div>
+          <div class="info-card">
+            <div class="info-card__icon info-card__icon--success"><i data-lucide="zap"></i></div>
+            <h4>3 Tools Only</h4>
+            <p>plan_feature(), get_atoms(), modify_screen() — simple and composable.</p>
+          </div>
+          <div class="info-card">
+            <div class="info-card__icon info-card__icon--warning"><i data-lucide="layout-template"></i></div>
+            <h4>15 Shell Layouts</h4>
+            <p>Pre-designed layout skeletons (A–O) for every screen type.</p>
+          </div>
+        </div>
+
+        <h2>How It Works</h2>
+        <p>You describe a feature in natural language. The AI automatically:</p>
+        <div class="flow">
+          <div class="flow__step"><span class="num">1</span> Plans the feature</div>
+          <span class="flow__arrow">→</span>
+          <div class="flow__step"><span class="num">2</span> Selects shell layout</div>
+          <span class="flow__arrow">→</span>
+          <div class="flow__step"><span class="num">3</span> Fetches CDN atoms</div>
+          <span class="flow__arrow">→</span>
+          <div class="flow__step"><span class="num">4</span> Writes HTML file</div>
+          <span class="flow__arrow">→</span>
+          <div class="flow__step"><span class="num">5</span> Open in browser</div>
+        </div>
+
+        <div class="callout callout--info">
+          <i data-lucide="info"></i>
+          <div class="callout__content">
+            <strong>Internet Required</strong>
+            <p>Generated HTML loads web components from a cloud CDN. You must be online to view pages in your browser.</p>
+          </div>
+        </div>
+
+        <div class="section__footer">
+          <span></span>
+          <button class="btn btn--ghost" onclick="navigate('model')">Next: Recommended Model <i data-lucide="arrow-right"></i></button>
+        </div>
+      </div>
+
+      <!-- 02 MODEL -->
+      <div class="section" id="sec-model">
+        <div class="section__header">
+          <h1>Recommended LLM Model</h1>
+          <p>This MCP is optimized for a specific model configuration to produce the best results.</p>
+        </div>
+
+        <div class="callout callout--warning">
+          <i data-lucide="crown"></i>
+          <div class="callout__content">
+            <strong>Best Model: Claude Opus 4.6 — High Thinking</strong>
+            <p>Extended reasoning produces better layout decisions, richer sample data, and more accurate shell selection.</p>
+          </div>
+        </div>
+
+        <div class="table-wrap">
+          <table>
+            <tr><th>Model</th><th>Rating</th><th>Notes</th></tr>
+            <tr>
+              <td><strong class="table-bold">Claude Opus 4.6 (High Thinking)</strong></td>
+              <td><span class="stars">★★★★★</span> <span class="model-badge">BEST</span></td>
+              <td>Best shell selection, richest sample data, fewest layout errors</td>
+            </tr>
+            <tr>
+              <td>Claude Sonnet 4.6</td>
+              <td><span class="stars">★★★★☆</span></td>
+              <td>Fast, reliable for simple dashboards and settings pages</td>
+            </tr>
+            <tr>
+              <td>GPT-5.5</td>
+              <td><span class="stars">★★★☆☆</span></td>
+              <td>Works but may need manual shell correction</td>
+            </tr>
+          </table>
+        </div>
+
+        <h2>Why Opus 4.6 High Thinking?</h2>
+        <div class="grid-2">
+          <div class="info-card">
+            <div class="info-card__icon"><i data-lucide="brain"></i></div>
+            <h4>Extended Reasoning</h4>
+            <p>Thinks through layout decisions before writing, picks optimal shell automatically.</p>
+          </div>
+          <div class="info-card">
+            <div class="info-card__icon info-card__icon--success"><i data-lucide="database"></i></div>
+            <h4>Rich Sample Data</h4>
+            <p>Generates realistic event names, IPs, timestamps — pages look production-ready instantly.</p>
+          </div>
+        </div>
+
+        <div class="section__footer">
+          <button class="btn btn--ghost" onclick="navigate('overview')"><i data-lucide="arrow-left"></i> Previous</button>
+          <button class="btn btn--ghost" onclick="navigate('quickstart')">Next: Quick Start <i data-lucide="arrow-right"></i></button>
+        </div>
+      </div>
+
+      <!-- 03 QUICK START -->
+      <div class="section" id="sec-quickstart">
+        <div class="section__header">
+          <h1>Quick Start</h1>
+          <p>Create your first screen in under 30 seconds with one prompt.</p>
+        </div>
+
+        <div class="callout callout--success">
+          <i data-lucide="sparkles"></i>
+          <div class="callout__content">
+            <strong>The Magic Formula</strong>
+            <p>"Create [feature name] [page type] for Log360 Cloud under [tab name]"</p>
+          </div>
+        </div>
+
+        <h2>Example Prompts</h2>
+        <div class="code-block" data-lang="prompts">
+<span class="cm">// Dashboard (Shell A)</span>
+"Create <span class="st">Event Overview Dashboard</span> for <span class="st">Log360 Cloud</span>"
+
+<span class="cm">// Report Page (Shell C)</span>
+"Create <span class="st">User Logon Activity Report</span> for <span class="st">Log360 Cloud</span> under <span class="st">Reports</span>"
+
+<span class="cm">// Settings (Shell B)</span>
+"Create <span class="st">Alert Notification Settings</span> for <span class="st">Log360 Cloud</span> under <span class="st">Settings</span>"
+
+<span class="cm">// Multi-page Feature</span>
+"Build <span class="st">Agentic AI SOAR</span> feature for <span class="st">Log360 Cloud</span> under <span class="st">Security</span>"</div>
+
+        <h2>Key Ingredients</h2>
+        <div class="grid-2">
+          <div class="info-card">
+            <div class="info-card__icon info-card__icon--warning"><i data-lucide="tag"></i></div>
+            <h4>Product Name</h4>
+            <p>Always mention "Log360 Cloud" to give the AI proper context.</p>
+          </div>
+          <div class="info-card">
+            <div class="info-card__icon info-card__icon--success"><i data-lucide="bookmark"></i></div>
+            <h4>Tab Name</h4>
+            <p>Specify "under Reports" or "under Settings" to guide shell selection.</p>
+          </div>
+        </div>
+
+        <h2>Available Tabs</h2>
+        <div class="table-wrap">
+          <table>
+            <tr><th>Tab</th><th>Typical Shell</th><th>What Goes Here</th></tr>
+            <tr><td><span class="tab-badge">Dashboard</span></td><td>Shell A</td><td>Overview metrics, KPIs, charts</td></tr>
+            <tr><td><span class="tab-badge">Security</span></td><td>Shell I, J, K, L, M</td><td>Incidents, SOC, investigations</td></tr>
+            <tr><td><span class="tab-badge">Reports</span></td><td>Shell C</td><td>Audit logs, compliance, exports</td></tr>
+            <tr><td><span class="tab-badge">Alerts</span></td><td>Shell D, E</td><td>Alert rules, event lists</td></tr>
+            <tr><td><span class="tab-badge">Settings</span></td><td>Shell B</td><td>Configuration, preferences</td></tr>
+            <tr><td><span class="tab-badge">Cloud Protection</span></td><td>Shell A, H</td><td>Cloud posture, integrations</td></tr>
+            <tr><td><span class="tab-badge">Compliance</span></td><td>Shell C</td><td>CIS, PCI, HIPAA reports</td></tr>
+          </table>
+        </div>
+
+        <div class="section__footer">
+          <button class="btn btn--ghost" onclick="navigate('model')"><i data-lucide="arrow-left"></i> Previous</button>
+          <button class="btn btn--ghost" onclick="navigate('prompting')">Next: How to Prompt <i data-lucide="arrow-right"></i></button>
+        </div>
+      </div>
+
+      <!-- 04 HOW TO PROMPT -->
+      <div class="section" id="sec-prompting">
+        <div class="section__header">
+          <h1>How to Prompt</h1>
+          <p>Master the three prompting scenarios: creating new screens, modifying existing ones, and recreating from screenshots.</p>
+        </div>
+
+        <!-- SCENARIO 1 -->
+        <h2>Scenario 1: Creating a New Screen (First Time)</h2>
+        <p>Use this when you're building a feature from scratch. The key ingredients are: <strong>action keyword</strong> + <strong>feature name</strong> + <strong>product name</strong> + <strong>tab name</strong>.</p>
+
+        <div class="callout callout--success">
+          <i data-lucide="sparkles"></i>
+          <div class="callout__content">
+            <strong>Formula: "Create [feature] for [product] under [tab]"</strong>
+            <p>Always mention "Log360 Cloud" as the product and specify which tab it belongs to.</p>
+          </div>
+        </div>
+
+        <h3>Dashboard Examples (Shell A)</h3>
+
+        <div class="code-block" data-lang="dashboard">
+<span class="cm">// Simple dashboard</span>
+"Create <span class="st">Event Overview Dashboard</span> for <span class="st">Log360 Cloud</span>"</div>
+
+        <div class="code-block" data-lang="dashboard + tab">
+<span class="cm">// Dashboard with specific tab</span>
+"Create <span class="st">Cloud Security Posture Dashboard</span> for <span class="st">Log360 Cloud</span>
+ under <span class="st">Cloud Protection</span>"</div>
+
+        <div class="code-block" data-lang="soc dashboard">
+<span class="cm">// SOC monitoring dashboard</span>
+"Build <span class="st">SOC Command Center</span> for <span class="st">Log360 Cloud</span> under <span class="st">Security tab</span>"</div>
+
+        <h3>Report Examples (Shell C)</h3>
+
+        <div class="code-block" data-lang="audit report">
+<span class="cm">// Audit report with tab</span>
+"Create <span class="st">User Logon Activity Report</span> for <span class="st">Log360 Cloud</span>
+ under <span class="st">Reports</span>"</div>
+
+        <div class="code-block" data-lang="compliance report">
+<span class="cm">// Compliance report</span>
+"Create <span class="st">PCI DSS Compliance Audit Report</span> for <span class="st">Log360 Cloud</span>
+ under <span class="st">Compliance</span>"</div>
+
+        <div class="code-block" data-lang="network report">
+<span class="cm">// Network report</span>
+"Build <span class="st">Firewall Traffic Analysis Report</span> for <span class="st">Log360 Cloud</span>
+ under <span class="st">Reports tab</span>"</div>
+
+        <h3>Settings Examples (Shell B)</h3>
+
+        <div class="code-block" data-lang="alert settings">
+<span class="cm">// Alert settings</span>
+"Create <span class="st">Alert Notification Settings</span> for <span class="st">Log360 Cloud</span>
+ under <span class="st">Settings</span>"</div>
+
+        <div class="code-block" data-lang="smtp config">
+<span class="cm">// SMTP config</span>
+"Create <span class="st">SMTP Mail Server Configuration</span> page for <span class="st">Log360 Cloud</span>
+ under <span class="st">Settings</span>"</div>
+
+        <div class="code-block" data-lang="integration settings">
+<span class="cm">// Integration settings</span>
+"Build <span class="st">Ticketing Tool Integration Settings</span> for <span class="st">Log360 Cloud</span>
+ under <span class="st">Settings tab</span>"</div>
+
+        <h3>Multi-Page Feature</h3>
+
+        <div class="code-block" data-lang="multi-page soar">
+<span class="cm">// Complex feature — AI creates separate HTML for each page</span>
+"Build <span class="st">Agentic AI SOAR</span> feature for <span class="st">Log360 Cloud</span> under <span class="st">Security</span>
+ with a Dashboard overview, Playbook Builder, and Investigation console"</div>
+
+        <div class="code-block" data-lang="multi-page threat intel">
+<span class="cm">// Threat Intelligence multi-page</span>
+"Create <span class="st">Threat Intelligence</span> feature for <span class="st">Log360 Cloud</span> under <span class="st">Security</span>
+ including a Dashboard, IOC Feed table, and Settings page"</div>
+
+        <!-- SCENARIO 2 -->
+        <h2>Scenario 2: Modifying an Existing Screen</h2>
+        <p>After your screen is created, use <code>modify_screen()</code> to make changes without rebuilding from scratch.</p>
+
+        <div class="callout callout--warning">
+          <i data-lucide="key"></i>
+          <div class="callout__content">
+            <strong>Always include "use modify_screen()" in your prompt</strong>
+            <p>This keyword triggers the modification pipeline instead of creating a new page.</p>
+          </div>
+        </div>
+
+        <h3>Modification Prompts</h3>
+
+        <div class="code-block" data-lang="patch — text change">
+<span class="cm">// Change text/labels</span>
+"Change the dashboard title to '<span class="st">Security Event Monitor</span>'
+ in event-overview-dashboard.html — use <span class="fn">modify_screen()</span>"</div>
+
+        <div class="code-block" data-lang="inject — add component">
+<span class="cm">// Add a new component</span>
+"Add a <span class="st">drawer panel</span> that shows event details when clicking
+ a table row in my dashboard — use <span class="fn">modify_screen()</span>"</div>
+
+        <div class="code-block" data-lang="swap — replace component">
+<span class="cm">// Swap a chart type</span>
+"Replace the <span class="st">pie chart</span> with a <span class="st">horizontal bar chart</span>
+ showing top 10 IPs — use <span class="fn">modify_screen()</span>"</div>
+
+        <div class="code-block" data-lang="restyle — colors/css">
+<span class="cm">// Change colors/styling</span>
+"Make the KPI cards use <span class="st">blue accent</span> instead of default
+ colors — use <span class="fn">modify_screen()</span>"</div>
+
+        <div class="code-block" data-lang="reflow — move/reorder">
+<span class="cm">// Move components around</span>
+"Move the <span class="st">alert feed widget</span> above the chart row
+ — use <span class="fn">modify_screen()</span>"</div>
+
+        <div class="code-block" data-lang="inject — add table">
+<span class="cm">// Add table with action bar</span>
+"Inject an <span class="st">actionbar + data table</span> below the chart grid
+ showing recent events — use <span class="fn">modify_screen()</span>"</div>
+
+        <div class="code-block" data-lang="clone — duplicate page">
+<span class="cm">// Clone page</span>
+"Clone event-overview-dashboard.html as <span class="st">network-dashboard.html</span>
+ and change all data to network metrics — use <span class="fn">modify_screen()</span>"</div>
+
+        <!-- SCENARIO 3 -->
+        <h2>Scenario 3: Recreating from a Screenshot (Area Map)</h2>
+        <p>When you have a screenshot of an existing UI and want to recreate it, you must provide context using the <strong>Area Map</strong> approach.</p>
+
+        <div class="callout callout--info">
+          <i data-lucide="image"></i>
+          <div class="callout__content">
+            <strong>Area Map = describe what you see in the screenshot</strong>
+            <p>Describe the layout zones from left→right, top→bottom. This helps the AI pick the right shell and recreate it accurately.</p>
+          </div>
+        </div>
+
+        <h3>Screenshot Recreation Prompts</h3>
+
+        <div class="code-block" data-lang="recreate — dashboard">
+<span class="cm">// Attach your screenshot + describe it</span>
+"Recreate this screen for <span class="st">Log360 Cloud</span> — use <span class="fn">Elegant MCP tool</span>
+
+ <span class="kw">Area Map:</span>
+ - Top: Navigation bar with Dashboard tab active
+ - Row 1: 4 KPI metric cards (Total Events, Alerts, Sources, Latency)
+ - Row 2 Left: Area chart showing event trend over 7 days
+ - Row 2 Right: Donut chart showing event categories
+ - Row 3: Full-width data table with recent events
+
+ Product: <span class="st">Log360 Cloud</span>
+ Tab: <span class="st">Dashboard</span>"</div>
+
+        <div class="code-block" data-lang="recreate — report page">
+<span class="cm">// Sidebar layout with report table</span>
+"Recreate this screen for <span class="st">Log360 Cloud</span> — use <span class="fn">Elegant MCP tool</span>
+
+ <span class="kw">Area Map:</span>
+ - Left: Side menu with report categories (Logon Reports, Account Reports)
+ - Top Right: Filter row with source picker and date range
+ - Middle Right: Bar chart showing logon activity by hour
+ - Bottom Right: Data table with columns (User, Source, Time, Status)
+
+ Product: <span class="st">Log360 Cloud</span>
+ Tab: <span class="st">Reports</span>"</div>
+
+        <div class="code-block" data-lang="recreate — settings page">
+<span class="cm">// Settings page recreation</span>
+"Recreate this screen for <span class="st">Log360 Cloud</span> — use <span class="fn">Elegant MCP tool</span>
+
+ <span class="kw">Area Map:</span>
+ - Left: Settings side menu (Notifications, Profiles, Policies)
+ - Right Top: Classic tabs (Email, SMS, Webhook)
+ - Right Body: Form fields for SMTP config (server, port, encryption)
+ - Right Bottom: Save/Cancel buttons
+
+ Product: <span class="st">Log360 Cloud</span>
+ Tab: <span class="st">Settings</span>"</div>
+
+        <h3>Area Map Best Practices</h3>
+        <div class="grid-2">
+          <div class="info-card">
+            <div class="info-card__icon info-card__icon--success"><i data-lucide="scan"></i></div>
+            <h4>Describe Top → Bottom</h4>
+            <p>List zones in reading order: top bar, then row by row, left to right.</p>
+          </div>
+          <div class="info-card">
+            <div class="info-card__icon"><i data-lucide="tag"></i></div>
+            <h4>Name the Components</h4>
+            <p>Say "KPI cards", "data table", "donut chart", "side menu" — specific names help.</p>
+          </div>
+          <div class="info-card">
+            <div class="info-card__icon info-card__icon--warning"><i data-lucide="package"></i></div>
+            <h4>Mention Product & Tab</h4>
+            <p>Always end with "Product: Log360 Cloud" and "Tab: [name]" for proper context.</p>
+          </div>
+          <div class="info-card">
+            <div class="info-card__icon info-card__icon--danger"><i data-lucide="wand-2"></i></div>
+            <h4>Say "use Elegant MCP tool"</h4>
+            <p>This triggers the AI to use plan_feature() with has_image=true for screenshot matching.</p>
+          </div>
+        </div>
+
+        <h2>Quick Reference: Prompt Cheatsheet</h2>
+        <div class="table-wrap">
+          <table>
+            <tr><th>Scenario</th><th>Key Phrase</th><th>Required Info</th></tr>
+            <tr>
+              <td><strong class="table-bold">New Screen</strong></td>
+              <td><code>Create / Build / Design</code></td>
+              <td>Feature name + "for Log360 Cloud" + "under [Tab]"</td>
+            </tr>
+            <tr>
+              <td><strong class="table-bold">Modify Screen</strong></td>
+              <td><code>use modify_screen()</code></td>
+              <td>What to change + file name or description of target</td>
+            </tr>
+            <tr>
+              <td><strong class="table-bold">Recreate from Image</strong></td>
+              <td><code>use Elegant MCP tool</code></td>
+              <td>Screenshot + Area Map + Product name + Tab name</td>
+            </tr>
+          </table>
+        </div>
+
+        <div class="section__footer">
+          <button class="btn btn--ghost" onclick="navigate('quickstart')"><i data-lucide="arrow-left"></i> Previous</button>
+          <button class="btn btn--ghost" onclick="navigate('shells')">Next: Shell Types <i data-lucide="arrow-right"></i></button>
+        </div>
+      </div>
+
+      <!-- 05 SHELLS -->
+      <div class="section" id="sec-shells">
+        <div class="section__header">
+          <h1>Shell Types — Complete Reference</h1>
+          <p>Each shell is a pre-designed layout skeleton optimized for a specific screen type.</p>
+        </div>
+
+        <div class="table-wrap">
+          <table>
+            <tr><th>Shell</th><th>Type</th><th>Best For</th><th>Key Components</th></tr>
+            <tr>
+              <td><span class="shell-badge">A</span></td>
+              <td><strong class="table-bold">Dashboard</strong></td>
+              <td>Overview, monitoring, KPI metrics</td>
+              <td>KPI strip + widget grid + charts + alert feed</td>
+            </tr>
+            <tr>
+              <td><span class="shell-badge">B</span></td>
+              <td><strong class="table-bold">Settings</strong></td>
+              <td>Configuration, preferences, admin</td>
+              <td>Side menu + form groups + classic tabs</td>
+            </tr>
+            <tr>
+              <td><span class="shell-badge">C</span></td>
+              <td><strong class="table-bold">Reports</strong></td>
+              <td>Audit logs, compliance, export</td>
+              <td>Side menu + filter row + chart + data table</td>
+            </tr>
+            <tr>
+              <td><span class="shell-badge">D</span></td>
+              <td><strong class="table-bold">Split Panel</strong></td>
+              <td>Master-detail, list + detail</td>
+              <td>Left list panel + right detail panel</td>
+            </tr>
+            <tr>
+              <td><span class="shell-badge">E</span></td>
+              <td><strong class="table-bold">Table / List</strong></td>
+              <td>Data tables, log viewers</td>
+              <td>Action bar + full-width table + drawer</td>
+            </tr>
+            <tr>
+              <td><span class="shell-badge">G</span></td>
+              <td><strong class="table-bold">Canvas Editor</strong></td>
+              <td>Flow builders, playbook editors</td>
+              <td>Toolbar + canvas + properties panel</td>
+            </tr>
+            <tr>
+              <td><span class="shell-badge">H</span></td>
+              <td><strong class="table-bold">Card Catalog</strong></td>
+              <td>Marketplace, integrations</td>
+              <td>Filter bar + card grid + categories</td>
+            </tr>
+            <tr>
+              <td><span class="shell-badge">I</span></td>
+              <td><strong class="table-bold">Investigation</strong></td>
+              <td>Triage, forensics, incident detail</td>
+              <td>3-panel: queue + detail + evidence</td>
+            </tr>
+            <tr>
+              <td><span class="shell-badge">J</span></td>
+              <td><strong class="table-bold">HUD / Command</strong></td>
+              <td>SOC center, live monitoring</td>
+              <td>Real-time feeds + metrics + command</td>
+            </tr>
+            <tr>
+              <td><span class="shell-badge">K</span></td>
+              <td><strong class="table-bold">Kanban Board</strong></td>
+              <td>Workflow, task lanes, pipelines</td>
+              <td>Drag-drop columns + status cards</td>
+            </tr>
+            <tr>
+              <td><span class="shell-badge">L</span></td>
+              <td><strong class="table-bold">Timeline</strong></td>
+              <td>Event timelines, activity logs</td>
+              <td>Time axis + event cards + zoom</td>
+            </tr>
+            <tr>
+              <td><span class="shell-badge">M</span></td>
+              <td><strong class="table-bold">Graph Explorer</strong></td>
+              <td>Network topology, relationship maps</td>
+              <td>Graph canvas + node details + controls</td>
+            </tr>
+            <tr>
+              <td><span class="shell-badge">N</span></td>
+              <td><strong class="table-bold">Workbook Builder</strong></td>
+              <td>Report builders, custom dashboards</td>
+              <td>Palette + workspace + preview</td>
+            </tr>
+            <tr>
+              <td><span class="shell-badge">O</span></td>
+              <td><strong class="table-bold">Accordion</strong></td>
+              <td>FAQ, collapsible sections</td>
+              <td>Expandable groups + nested content</td>
+            </tr>
+          </table>
+        </div>
+
+        <div class="callout callout--info">
+          <i data-lucide="lightbulb"></i>
+          <div class="callout__content">
+            <strong>Auto-Selection</strong>
+            <p>You don't need to specify the shell manually. The AI picks it from your prompt keywords. "Dashboard" → A, "Report" → C, "Settings" → B, etc.</p>
+          </div>
+        </div>
+
+        <div class="section__footer">
+          <button class="btn btn--ghost" onclick="navigate('quickstart')"><i data-lucide="arrow-left"></i> Previous</button>
+          <button class="btn btn--ghost" onclick="navigate('mapping')">Next: Shell Mapping <i data-lucide="arrow-right"></i></button>
+        </div>
+      </div>
+
+      <!-- 05 MAPPING -->
+      <div class="section" id="sec-mapping">
+        <div class="section__header">
+          <h1>Shell → Tab Mapping</h1>
+          <p>Real example prompts for every shell type, mapped to Log360 Cloud tabs.</p>
+        </div>
+
+        <div class="table-wrap">
+          <table>
+            <tr><th>Shell</th><th>Tab</th><th>Example Prompt (copy & use)</th></tr>
+            <tr><td><span class="shell-badge">A</span></td><td><span class="tab-badge">Dashboard</span></td><td>"Create <strong>Event Overview Dashboard</strong> for Log360 Cloud"</td></tr>
+            <tr><td><span class="shell-badge">A</span></td><td><span class="tab-badge">Cloud Protection</span></td><td>"Create <strong>Cloud Security Posture Dashboard</strong> for Log360 Cloud"</td></tr>
+            <tr><td><span class="shell-badge">B</span></td><td><span class="tab-badge">Settings</span></td><td>"Create <strong>Alert Notification Settings</strong> for Log360 Cloud under Settings"</td></tr>
+            <tr><td><span class="shell-badge">B</span></td><td><span class="tab-badge">Settings</span></td><td>"Create <strong>SMTP Configuration</strong> page for Log360 Cloud under Settings"</td></tr>
+            <tr><td><span class="shell-badge">C</span></td><td><span class="tab-badge">Reports</span></td><td>"Create <strong>User Logon Activity Audit</strong> for Log360 Cloud under Reports"</td></tr>
+            <tr><td><span class="shell-badge">C</span></td><td><span class="tab-badge">Compliance</span></td><td>"Create <strong>PCI DSS Compliance Report</strong> for Log360 Cloud"</td></tr>
+            <tr><td><span class="shell-badge">D</span></td><td><span class="tab-badge">Alerts</span></td><td>"Create <strong>Alert Rule Manager</strong> with master-detail for Log360 Cloud"</td></tr>
+            <tr><td><span class="shell-badge">E</span></td><td><span class="tab-badge">Reports</span></td><td>"Create <strong>Log Source Management</strong> table for Log360 Cloud"</td></tr>
+            <tr><td><span class="shell-badge">G</span></td><td><span class="tab-badge">Security</span></td><td>"Create <strong>SOAR Playbook Builder</strong> for Log360 Cloud under Security"</td></tr>
+            <tr><td><span class="shell-badge">H</span></td><td><span class="tab-badge">Settings</span></td><td>"Create <strong>Integration Marketplace</strong> for Log360 Cloud"</td></tr>
+            <tr><td><span class="shell-badge">I</span></td><td><span class="tab-badge">Security</span></td><td>"Create <strong>Incident Investigation Console</strong> for Log360 Cloud"</td></tr>
+            <tr><td><span class="shell-badge">J</span></td><td><span class="tab-badge">Security</span></td><td>"Create <strong>SOC Command Center</strong> for Log360 Cloud under Security"</td></tr>
+            <tr><td><span class="shell-badge">K</span></td><td><span class="tab-badge">Security</span></td><td>"Create <strong>Incident Workflow Board</strong> for Log360 Cloud"</td></tr>
+            <tr><td><span class="shell-badge">L</span></td><td><span class="tab-badge">Security</span></td><td>"Create <strong>Attack Timeline</strong> for Log360 Cloud under Security"</td></tr>
+            <tr><td><span class="shell-badge">M</span></td><td><span class="tab-badge">Security</span></td><td>"Create <strong>Network Topology Map</strong> for Log360 Cloud"</td></tr>
+            <tr><td><span class="shell-badge">N</span></td><td><span class="tab-badge">Reports</span></td><td>"Create <strong>Custom Report Builder</strong> for Log360 Cloud under Reports"</td></tr>
+            <tr><td><span class="shell-badge">O</span></td><td><span class="tab-badge">Settings</span></td><td>"Create <strong>FAQ & Help Center</strong> for Log360 Cloud"</td></tr>
+          </table>
+        </div>
+
+        <div class="section__footer">
+          <button class="btn btn--ghost" onclick="navigate('shells')"><i data-lucide="arrow-left"></i> Previous</button>
+          <button class="btn btn--ghost" onclick="navigate('workflow')">Next: Workflow <i data-lucide="arrow-right"></i></button>
+        </div>
+      </div>
+
+      <!-- 06 WORKFLOW -->
+      <div class="section" id="sec-workflow">
+        <div class="section__header">
+          <h1>The 3-Step Workflow</h1>
+          <p>How the AI builds your screen behind the scenes.</p>
+        </div>
+
+        <h2>Step 1: plan_feature()</h2>
+        <p>Triggered automatically when you say "create", "build", "design", or mention a feature name.</p>
+        <div class="code-block" data-lang="internal">
+<span class="cm">// You type:</span>
+"Create Event Overview Dashboard for Log360 Cloud"
+
+<span class="cm">// AI calls internally:</span>
+<span class="fn">plan_feature</span>(
+  feature_name = <span class="st">"Event Overview Dashboard"</span>,
+  description  = <span class="st">"Dashboard showing event metrics, trends..."</span>
+)
+
+<span class="cm">// Returns: feature_plan_id + shell_guide table</span></div>
+
+        <h2>Step 2: get_atoms()</h2>
+        <p>AI picks the best shell and fetches all web component templates + layout rules.</p>
+        <div class="code-block" data-lang="internal">
+<span class="fn">get_atoms</span>(
+  feature_plan_id = <span class="st">"abc123"</span>,
+  shell           = <span class="st">"A"</span>,       <span class="cm">// Dashboard shell</span>
+  filename        = <span class="st">"event-overview-dashboard.html"</span>
+)
+
+<span class="cm">// Returns: 31 CDN atoms + shell_contract + scaffold + CSS tokens</span></div>
+
+        <h2>Step 3: Write HTML</h2>
+        <p>AI assembles the page using <code>&lt;me-*&gt;</code> web component tags and writes the file.</p>
+
+        <div class="callout callout--success">
+          <i data-lucide="check-circle"></i>
+          <div class="callout__content">
+            <strong>Zero Code from You</strong>
+            <p>You don't write any code! Just describe what you want, and the AI handles the entire pipeline.</p>
+          </div>
+        </div>
+
+        <div class="section__footer">
+          <button class="btn btn--ghost" onclick="navigate('mapping')"><i data-lucide="arrow-left"></i> Previous</button>
+          <button class="btn btn--ghost" onclick="navigate('modify')">Next: Modify Screens <i data-lucide="arrow-right"></i></button>
+        </div>
+      </div>
+
+      <!-- 07 MODIFY -->
+      <div class="section" id="sec-modify">
+        <div class="section__header">
+          <h1>Modifying Existing Screens</h1>
+          <p>After creating a screen, use modify_screen() to make changes without rebuilding.</p>
+        </div>
+
+        <div class="callout callout--warning">
+          <i data-lucide="key"></i>
+          <div class="callout__content">
+            <strong>Trigger Keyword</strong>
+            <p>Always mention what you want to change AND include "use modify_screen()" in your prompt to kickstart modification.</p>
+          </div>
+        </div>
+
+        <h2>Modification Modes</h2>
+        <div class="table-wrap">
+          <table>
+            <tr><th>Mode</th><th>Use When</th><th>Example</th></tr>
+            <tr><td><code>patch</code></td><td>Text / label / title changes</td><td>"Change title to 'Security Events' — use modify_screen()"</td></tr>
+            <tr><td><code>restyle</code></td><td>CSS / color / spacing</td><td>"Make KPI cards blue accent — use modify_screen()"</td></tr>
+            <tr><td><code>reflow</code></td><td>Move / remove / reorder</td><td>"Move alert feed above chart — use modify_screen()"</td></tr>
+            <tr><td><code>swap</code></td><td>Replace one component</td><td>"Swap pie chart for bar chart — use modify_screen()"</td></tr>
+            <tr><td><code>inject</code></td><td>Add new component</td><td>"Add a drawer for event details — use modify_screen()"</td></tr>
+            <tr><td><code>clone_page</code></td><td>Duplicate page</td><td>"Clone as network-events.html — use modify_screen()"</td></tr>
+            <tr><td><code>version</code></td><td>Undo / rollback</td><td>"Undo last change — use modify_screen()"</td></tr>
+            <tr><td><code>modify</code></td><td>Complex redesign</td><td>"Redesign with 3 columns — use modify_screen()"</td></tr>
+          </table>
+        </div>
+
+        <h2>Example Modification Prompts</h2>
+        <div class="code-block" data-lang="prompts">
+<span class="cm">// Simple text change</span>
+"In event-overview-dashboard.html, change the title to
+ 'Security Event Monitor' — use <span class="fn">modify_screen()</span>"
+
+<span class="cm">// Add a new component</span>
+"Add a drawer that shows event details when clicking a row
+ in event-overview-dashboard.html — use <span class="fn">modify_screen()</span>"
+
+<span class="cm">// Complex redesign</span>
+"Redesign the dashboard to use 3-column layout with a
+ timeline on the right — use <span class="fn">modify_screen()</span>"</div>
+
+        <div class="section__footer">
+          <button class="btn btn--ghost" onclick="navigate('workflow')"><i data-lucide="arrow-left"></i> Previous</button>
+          <button class="btn btn--ghost" onclick="navigate('architecture')">Next: Architecture <i data-lucide="arrow-right"></i></button>
+        </div>
+      </div>
+
+      <!-- 08 ARCHITECTURE -->
+      <div class="section" id="sec-architecture">
+        <div class="section__header">
+          <h1>Architecture & Cloud CDN</h1>
+          <p>Understanding how the generated HTML connects to cloud-hosted web components.</p>
+        </div>
+
+        <div class="callout callout--danger">
+          <i data-lucide="wifi"></i>
+          <div class="callout__content">
+            <strong>Internet Required to View HTML</strong>
+            <p>All UI components (&lt;me-*&gt; web components) are loaded from a Cloud CDN. You must have internet access to view generated pages.</p>
+          </div>
+        </div>
+
+        <h2>System Architecture</h2>
+        <div class="arch-diagram">┌─────────────────────────────────────────────────────────────┐
+│  🖥️  YOUR BROWSER                                           │
+│  ┌────────────────────────────────────────────────────────┐ │
+│  │  event-overview-dashboard.html  (local file)           │ │
+│  │                                                        │ │
+│  │  &lt;me-widget&gt;  &lt;me-kpi-strip&gt;  &lt;me-data-table&gt;        │ │
+│  │       ↓              ↓               ↓                 │ │
+│  └───────┼──────────────┼───────────────┼─────────────────┘ │
+└──────────┼──────────────┼───────────────┼───────────────────┘
+           ↓              ↓               ↓
+┌─────────────────────────────────────────────────────────────┐
+│  ☁️  CLOUD CDN                                               │
+│  ├── tokens.css    (design tokens — colors, spacing)        │
+│  ├── atoms.css     (component styles — 31 atoms)            │
+│  ├── layout.css    (shell layout system)                    │
+│  ├── atoms.js      (web component logic)                    │
+│  ├── ECharts       (charting library)                       │
+│  └── Lucide Icons  (638 icons)                              │
+└─────────────────────────────────────────────────────────────┘</div>
+
+        <h2>Local vs Cloud</h2>
+        <div class="grid-2">
+          <div class="info-card">
+            <div class="info-card__icon info-card__icon--success"><i data-lucide="hard-drive"></i></div>
+            <h4>Stored Locally</h4>
+            <p>HTML files, page-specific CSS, content data — all in your workspace folder.</p>
+          </div>
+          <div class="info-card">
+            <div class="info-card__icon"><i data-lucide="cloud"></i></div>
+            <h4>Loaded from CDN</h4>
+            <p>tokens.css, atoms.css, atoms.js, layout.css, ECharts, Lucide icons.</p>
+          </div>
+        </div>
+
+        <div class="section__footer">
+          <button class="btn btn--ghost" onclick="navigate('modify')"><i data-lucide="arrow-left"></i> Previous</button>
+          <button class="btn btn--ghost" onclick="navigate('claude')">Next: Claude Setup <i data-lucide="arrow-right"></i></button>
+        </div>
+      </div>
+
+      <!-- 09 CLAUDE -->
+      <div class="section" id="sec-claude">
+        <div class="section__header">
+          <h1>Claude Desktop / Claude.ai Setup</h1>
+          <p>For users on Claude (not Cursor IDE) — how to install the MCP and configure your project.</p>
+        </div>
+
+        <!-- INSTALL MCP -->
+        <h2>Install MCP (One-Time Setup)</h2>
+        <p>Claude Desktop can install and connect to the Elegant Agent MCP server automatically. Just paste the link and let Claude handle it.</p>
+
+        <div class="grid-2">
+          <div class="info-card">
+            <div class="info-card__icon"><i data-lucide="monitor"></i></div>
+            <h4>Step 1: Open Claude Desktop</h4>
+            <p>Launch Claude Desktop app on your machine. Make sure you're on the latest version.</p>
+          </div>
+          <div class="info-card">
+            <div class="info-card__icon info-card__icon--success"><i data-lucide="terminal"></i></div>
+            <h4>Step 2: Go to AI Code Mode</h4>
+            <p>Switch to the AI code mode in Claude Desktop (where it can execute commands).</p>
+          </div>
+        </div>
+
+        <h3>Paste This Prompt in Claude</h3>
+        <div class="code-block" data-lang="paste this in claude">
+"Use this MCP tool link and make it work. Install all prerequisites if needed:
+
+ <span class="st">https://elegant-public-1042350023.development.localcatalystappsail.com/</span>"</div>
+
+        <div class="callout callout--info">
+          <i data-lucide="bot"></i>
+          <div class="callout__content">
+            <strong>Claude handles the rest automatically</strong>
+            <p>Claude will detect it's an MCP server URL, install any required dependencies (Node.js, npm packages, etc.), configure the connection, and confirm when it's ready.</p>
+          </div>
+        </div>
+
+        <h3>Verify Installation</h3>
+        <div class="grid-2">
+          <div class="info-card">
+            <div class="info-card__icon info-card__icon--warning"><i data-lucide="power"></i></div>
+            <h4>Step 3: Restart Claude Desktop</h4>
+            <p>After installation completes, <strong>close Claude Desktop completely</strong> and reopen it. This is required for the MCP to register.</p>
+          </div>
+          <div class="info-card">
+            <div class="info-card__icon info-card__icon--success"><i data-lucide="check-circle"></i></div>
+            <h4>Step 4: Confirm in Settings</h4>
+            <p>Go to <strong>Settings → Developer</strong>. You should see <strong>"Elegant Agent"</strong> listed as a running MCP connector.</p>
+          </div>
+        </div>
+
+        <div class="callout callout--success">
+          <i data-lucide="plug-zap"></i>
+          <div class="callout__content">
+            <strong>You'll see "Elegant Agent" in the connector list</strong>
+            <p>If it shows as connected/running in Settings → Developer, you're all set! The MCP is now active for all conversations.</p>
+          </div>
+        </div>
+
+        <!-- DOWNLOAD CLAUDE.MD -->
+        <h2>Download claude.md</h2>
+        <p>This file contains all the instructions Claude needs to work with the Elegant Agent MCP. Download it and drop it into your Claude project.</p>
+
+        <div class="callout callout--success">
+          <i data-lucide="download"></i>
+          <div class="callout__content">
+            <strong>One file — all instructions included</strong>
+            <p>This <code>claude.md</code> teaches Claude how to call plan_feature(), get_atoms(), and modify_screen() correctly.</p>
+          </div>
+        </div>
+
+        <button class="btn btn--primary" onclick="downloadClaudeMd()" style="margin-bottom:24px;">
+          <i data-lucide="download"></i> Download claude.md
+        </button>
+
+        <!-- SETUP STEPS -->
+        <h2>Project Setup (For Each New Project)</h2>
+        <p>Once the MCP is installed, set up a project folder for organized work:</p>
+
+        <div class="grid-2">
+          <div class="info-card">
+            <div class="info-card__icon"><i data-lucide="folder-plus"></i></div>
+            <h4>1. Create Project Folder</h4>
+            <p>In Claude, create a new project and name it (e.g. "Log360 UI Builder" or your feature name).</p>
+          </div>
+          <div class="info-card">
+            <div class="info-card__icon info-card__icon--warning"><i data-lucide="file-text"></i></div>
+            <h4>2. Drag & Drop claude.md</h4>
+            <p>Drop the <code>claude.md</code> file into the project's <strong>custom instructions</strong> area (not chat).</p>
+          </div>
+          <div class="info-card">
+            <div class="info-card__icon info-card__icon--success"><i data-lucide="message-circle"></i></div>
+            <h4>3. Start Prompting</h4>
+            <p>Use keywords: "Create [feature] for Log360 Cloud under [tab]" — the MCP tools fire automatically.</p>
+          </div>
+          <div class="info-card">
+            <div class="info-card__icon info-card__icon--danger"><i data-lucide="copy"></i></div>
+            <h4>4. Copy HTML Output</h4>
+            <p>Claude provides the complete HTML in chat — copy it and save as a <code>.html</code> file locally.</p>
+          </div>
+        </div>
+
+        <div class="callout callout--warning">
+          <i data-lucide="alert-circle"></i>
+          <div class="callout__content">
+            <strong>Important: Project-Level Instructions</strong>
+            <p>Drop <code>claude.md</code> into the <em>project instructions</em> panel — not the chat. This ensures every conversation in that project uses the MCP rules automatically.</p>
+          </div>
+        </div>
+
+        <!-- COMPARISON -->
+        <h2>Cursor vs Claude Comparison</h2>
+        <div class="table-wrap">
+          <table>
+            <tr><th>Feature</th><th>Cursor IDE</th><th>Claude Desktop</th></tr>
+            <tr><td>MCP Connection</td><td>Native (auto-configured)</td><td>Auto-installed via link</td></tr>
+            <tr><td>File Writing</td><td>Writes to workspace directly</td><td>HTML in chat (copy-paste to file)</td></tr>
+            <tr><td>modify_screen()</td><td>Reads/writes files on disk</td><td>Provides modified HTML in chat</td></tr>
+            <tr><td>Verification</td><td>MCP shows in Cursor settings</td><td>Settings → Developer → Connectors</td></tr>
+            <tr><td>Recommended Model</td><td>Claude Opus 4.6 (via Cursor)</td><td>Claude Opus 4.6 (native)</td></tr>
+          </table>
+        </div>
+
+        <div class="section__footer">
+          <button class="btn btn--ghost" onclick="navigate('architecture')"><i data-lucide="arrow-left"></i> Previous</button>
+          <button class="btn btn--ghost" onclick="navigate('tips')">Next: Pro Tips <i data-lucide="arrow-right"></i></button>
+        </div>
+      </div>
+
+      <!-- 10 TIPS -->
+      <div class="section" id="sec-tips">
+        <div class="section__header">
+          <h1>Pro Tips & Best Practices</h1>
+          <p>Get the most out of Elegant Agent MCP with these advanced techniques.</p>
+        </div>
+
+        <h2>The Golden Formula</h2>
+        <div class="callout callout--success">
+          <i data-lucide="target"></i>
+          <div class="callout__content">
+            <strong>"Create [feature] for [product name] under [tab name]"</strong>
+            <p>Product: Log360 Cloud &nbsp;|&nbsp; Tabs: Dashboard, Security, Reports, Compliance, Alerts, Settings, Cloud Protection</p>
+          </div>
+        </div>
+
+        <h2>Power User Prompts</h2>
+        <div class="code-block" data-lang="advanced">
+<span class="cm">// Multi-page feature (creates multiple HTML files)</span>
+"Build a complete <span class="st">Threat Intelligence</span> feature for Log360 Cloud
+ with a Dashboard, Investigation console, and Settings page"
+
+<span class="cm">// Specific chart types</span>
+"Create <span class="st">Network Traffic Analysis</span> dashboard with
+ area chart for bandwidth, donut for protocols, hbar for top IPs"
+
+<span class="cm">// Clone and customize</span>
+"Clone event-overview-dashboard.html as network-dashboard.html
+ and change all data to network metrics — use <span class="fn">modify_screen()</span>"</div>
+
+        <h2>Common Mistakes</h2>
+        <div class="table-wrap">
+          <table>
+            <tr><th>❌ Don't</th><th>✅ Do</th></tr>
+            <tr><td>"Make a page"</td><td>"Create Alert Rules Management for Log360 Cloud under Alerts"</td></tr>
+            <tr><td>"Change the HTML"</td><td>"Change chart from area to bar in dashboard.html — use modify_screen()"</td></tr>
+            <tr><td>Write HTML manually</td><td>Let the AI call get_atoms() and build from templates</td></tr>
+            <tr><td>Open HTML without internet</td><td>Ensure CDN is accessible before viewing</td></tr>
+            <tr><td>Forget the product name</td><td>Always say "for Log360 Cloud"</td></tr>
+          </table>
+        </div>
+
+        <h2>Key Rules to Remember</h2>
+        <div class="grid-2">
+          <div class="info-card">
+            <div class="info-card__icon"><i data-lucide="tag"></i></div>
+            <h4>Mention Product Name</h4>
+            <p>"Log360 Cloud" gives proper context for shell and component selection.</p>
+          </div>
+          <div class="info-card">
+            <div class="info-card__icon info-card__icon--success"><i data-lucide="bookmark"></i></div>
+            <h4>Specify the Tab</h4>
+            <p>"under Reports" or "under Settings" steers the AI to the right shell.</p>
+          </div>
+          <div class="info-card">
+            <div class="info-card__icon info-card__icon--warning"><i data-lucide="edit-3"></i></div>
+            <h4>modify_screen() Keyword</h4>
+            <p>For changes to existing pages, always include "use modify_screen()" in your prompt.</p>
+          </div>
+          <div class="info-card">
+            <div class="info-card__icon info-card__icon--danger"><i data-lucide="wifi"></i></div>
+            <h4>Stay Online</h4>
+            <p>Web components load from CDN. No internet = blank page.</p>
+          </div>
+        </div>
+
+        <div class="section__footer">
+          <button class="btn btn--ghost" onclick="navigate('claude')"><i data-lucide="arrow-left"></i> Previous</button>
+          <button class="btn btn--ghost" onclick="navigate('home')"><i data-lucide="home"></i> Back to Home</button>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <script>
+    // Download claude.md
+    function downloadClaudeMd() {
+      const content = `⛔ CRITICAL: NO SUBAGENTS. NO PARALLEL AGENTS. NO TASK DELEGATION. NO TASK LISTS.
+You MUST build ALL pages yourself in the MAIN conversation — sequentially, one at a time.
+⛔ NEVER use TaskCreate, subagents, background agents, or parallel workers.
+⛔ NEVER say "I'll write all files in parallel using agents."
+Build page 1 → finish → build page 2 → finish → build page 3 → done.
+
+MULTI-PAGE PROGRESS TRACKING:
+When building multiple pages, show progress after each page:
+  ✅ Page 1/3: monitoring.html — DONE
+  🔄 Page 2/3: auditing.html — BUILDING
+  ⬚ Page 3/3: configuration.html — PENDING
+
+NEW BUILD (user asks to create/build a page):
+1. plan_feature(feature_name="<short name>", description="<details>")
+   → saves feature_plan_id from response
+2. FOR EACH PAGE (sequentially, one at a time):
+   a. get_atoms(feature_plan_id="<from step 1>", shell="<from shell_guide>", filename="<name>.html")
+      → all 3 params are REQUIRED. shell is a letter A-O from the plan response.
+      → if overflow, call addon_atoms(feature_plan_id="<same>", filename="<same>")
+   b. Write one complete HTML file to disk. Do NOT paste templates in chat.
+   c. Show progress: ✅ Page N/Total: filename — DONE
+3. After ALL pages written, show final summary.
+⛔ NEVER call modify_screen during a new build.
+
+EDIT EXISTING (user asks to change/fix/add to a page you already built):
+1. Find the HTML file path in the current project folder
+2. modify_screen(page_path="<full path to .html file>", mode="<tier>", change_request="<what to change>")
+   patch=text, restyle=CSS, reflow=move, swap=replace, inject=add, modify=complex
+
+ICONS:
+⛔ NEVER write inline <svg> tags. Use Lucide CDN: <i data-lucide="name"></i>
+Include <script src="https://unpkg.com/lucide@latest"><\/script> before </body>
+Call lucide.createIcons() at end of body.
+
+CHARTS:
+If page has charts, add in <head>: <script src="https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js"><\/script>
+chart-host divs MUST have style="height:280px" when outside a widget. Inside widgets, do NOT add height — CSS handles it.
+`;
+      const blob = new Blob([content], { type: 'text/markdown' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'CLAUDE.md';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }
+
+    // Theme
+    function toggleTheme() {
+      const html = document.documentElement;
+      const current = html.getAttribute('data-theme');
+      const next = current === 'light' ? 'dark' : 'light';
+      html.setAttribute('data-theme', next);
+      localStorage.setItem('ea-theme', next);
+      lucide.createIcons();
+    }
+
+    (function initTheme() {
+      const saved = localStorage.getItem('ea-theme');
+      if (saved) document.documentElement.setAttribute('data-theme', saved);
+    })();
+
+    lucide.createIcons();
+
+    // Navigation
+    const sections = ['home','overview','model','quickstart','prompting','shells','mapping','workflow','modify','architecture','claude','tips'];
+    let currentIdx = 0;
+
+    function navigate(id) {
+      document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+      document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+
+      document.getElementById('sec-' + id).classList.add('active');
+      document.querySelector(`[data-section="${id}"]`).classList.add('active');
+
+      currentIdx = sections.indexOf(id);
+      document.getElementById('progressFill').style.width = ((currentIdx / (sections.length - 1)) * 100) + '%';
+
+      document.getElementById('mainContent').scrollTop = 0;
+    }
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+        e.preventDefault();
+        if (currentIdx < sections.length - 1) navigate(sections[currentIdx + 1]);
+      }
+      if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+        e.preventDefault();
+        if (currentIdx > 0) navigate(sections[currentIdx - 1]);
+      }
+    });
+  </script>
+</body>
+</html>
